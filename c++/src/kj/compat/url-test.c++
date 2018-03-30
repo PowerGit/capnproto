@@ -98,9 +98,39 @@ KJ_TEST("parse / stringify URL") {
     KJ_EXPECT(!url.hasTrailingSlash);
     KJ_ASSERT(url.query.size() == 2);
     KJ_EXPECT(url.query[0].name == "baz");
-    KJ_EXPECT(url.query[0].value == "qux");
+    KJ_EXPECT(KJ_ASSERT_NONNULL(url.query[0].value) == "qux");
     KJ_EXPECT(url.query[1].name == "corge");
     KJ_EXPECT(url.query[1].value == nullptr);
+    KJ_EXPECT(KJ_ASSERT_NONNULL(url.fragment) == "garply");
+  }
+
+  {
+    auto url = parseAndCheck("https://capnproto.org/foo/bar?baz=qux&corge=#garply");
+    KJ_EXPECT(url.scheme == "https");
+    KJ_EXPECT(url.userInfo == nullptr);
+    KJ_EXPECT(url.host == "capnproto.org");
+    KJ_EXPECT(url.path.asPtr() == kj::ArrayPtr<const StringPtr>({"foo", "bar"}));
+    KJ_EXPECT(!url.hasTrailingSlash);
+    KJ_ASSERT(url.query.size() == 2);
+    KJ_EXPECT(url.query[0].name == "baz");
+    KJ_EXPECT(KJ_ASSERT_NONNULL(url.query[0].value) == "qux");
+    KJ_EXPECT(url.query[1].name == "corge");
+    KJ_EXPECT(KJ_ASSERT_NONNULL(url.query[1].value) == "");
+    KJ_EXPECT(KJ_ASSERT_NONNULL(url.fragment) == "garply");
+  }
+
+  {
+    auto url = parseAndCheck("https://capnproto.org/foo/bar?baz=&corge=grault#garply");
+    KJ_EXPECT(url.scheme == "https");
+    KJ_EXPECT(url.userInfo == nullptr);
+    KJ_EXPECT(url.host == "capnproto.org");
+    KJ_EXPECT(url.path.asPtr() == kj::ArrayPtr<const StringPtr>({"foo", "bar"}));
+    KJ_EXPECT(!url.hasTrailingSlash);
+    KJ_ASSERT(url.query.size() == 2);
+    KJ_EXPECT(url.query[0].name == "baz");
+    KJ_EXPECT(KJ_ASSERT_NONNULL(url.query[0].value) == "");
+    KJ_EXPECT(url.query[1].name == "corge");
+    KJ_EXPECT(KJ_ASSERT_NONNULL(url.query[1].value) == "grault");
     KJ_EXPECT(KJ_ASSERT_NONNULL(url.fragment) == "garply");
   }
 
@@ -113,9 +143,9 @@ KJ_TEST("parse / stringify URL") {
     KJ_EXPECT(url.hasTrailingSlash);
     KJ_ASSERT(url.query.size() == 2);
     KJ_EXPECT(url.query[0].name == "baz");
-    KJ_EXPECT(url.query[0].value == "qux");
+    KJ_EXPECT(KJ_ASSERT_NONNULL(url.query[0].value) == "qux");
     KJ_EXPECT(url.query[1].name == "corge");
-    KJ_EXPECT(url.query[1].value == "grault");
+    KJ_EXPECT(KJ_ASSERT_NONNULL(url.query[1].value) == "grault");
     KJ_EXPECT(KJ_ASSERT_NONNULL(url.fragment) == "garply");
   }
 
@@ -128,7 +158,7 @@ KJ_TEST("parse / stringify URL") {
     KJ_EXPECT(!url.hasTrailingSlash);
     KJ_ASSERT(url.query.size() == 1);
     KJ_EXPECT(url.query[0].name == "baz");
-    KJ_EXPECT(url.query[0].value == "qux");
+    KJ_EXPECT(KJ_ASSERT_NONNULL(url.query[0].value) == "qux");
     KJ_EXPECT(KJ_ASSERT_NONNULL(url.fragment) == "garply");
   }
 
@@ -137,7 +167,7 @@ KJ_TEST("parse / stringify URL") {
                              "https://capnproto.org/foo?bar+baz=qux+quux");
     KJ_ASSERT(url.query.size() == 1);
     KJ_EXPECT(url.query[0].name == "bar baz");
-    KJ_EXPECT(url.query[0].value == "qux quux");
+    KJ_EXPECT(KJ_ASSERT_NONNULL(url.query[0].value) == "qux quux");
   }
 
   {
@@ -310,7 +340,7 @@ KJ_TEST("URL for HTTP request") {
     KJ_EXPECT(!url.hasTrailingSlash);
     KJ_ASSERT(url.query.size() == 2);
     KJ_EXPECT(url.query[0].name == "baz");
-    KJ_EXPECT(url.query[0].value == "qux");
+    KJ_EXPECT(KJ_ASSERT_NONNULL(url.query[0].value) == "qux");
     KJ_EXPECT(url.query[1].name == "corge");
     KJ_EXPECT(url.query[1].value == nullptr);
   }
@@ -323,7 +353,7 @@ KJ_TEST("URL for HTTP request") {
     KJ_EXPECT(!url.hasTrailingSlash);
     KJ_ASSERT(url.query.size() == 2);
     KJ_EXPECT(url.query[0].name == "baz");
-    KJ_EXPECT(url.query[0].value == "qux");
+    KJ_EXPECT(KJ_ASSERT_NONNULL(url.query[0].value) == "qux");
     KJ_EXPECT(url.query[1].name == "corge");
     KJ_EXPECT(url.query[1].value == nullptr);
   }

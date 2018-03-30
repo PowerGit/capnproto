@@ -59,11 +59,12 @@ struct Url {
 
   struct QueryParam {
     String name;
-    String value;
+    Maybe<String> value;
   };
   Vector<QueryParam> query;
   // Query, e.g. from "?key=value&key2=value2". If a component of the query contains no '=' sign,
-  // it will be parsed as a key with an empty value.
+  // it will be parsed as a key with no value (and later serialized with no '=' sign if you call
+  // Url::toString()).
 
   Maybe<String> fragment;
   // The stuff after the '#' character (not including the '#' character itself), if present.
